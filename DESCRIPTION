@@ -1,0 +1,17 @@
+Package: ReadCMIP5
+Type: Package
+Title: CMIP5 data extraction and manipulation
+Version: 1.0
+Date: 2015-06-23
+Author: Zed Zulkafli
+Maintainer: Zed Zulkafli <zedzulkafli.dev@gmail.com>
+Description: Various functions for extraction of global 
+              climate model output based on user input 
+              of geographical location and time domain            
+Depends:
+    R (>= 3.0.2),
+    RNetCDF, ncdf, rgdal, zoo, xts, PCICt, SDMTools,
+        gstat, ggplot2, plyr
+License: GPL-3
+
+
