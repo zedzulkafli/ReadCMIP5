@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import(RNetCDF)
 import(zoo)
 import(PCICt)
@@ -8,7 +9,6 @@ importFrom(rgdal)
 importFrom(ggplot2)
 importFrom(plyr)
 exportPattern("^[[:alpha:]]+")
-
-#install.packages("udunits2", 
-#  configure.args='--with-udunits2=/usr/lib/x86_64-linux-gnu/libudunits2.so.0/ 
-#                  --with-udunits2-include=/usr/lib/x86_64-linux-gnu/libudunits2.so.0') 
+=======
+exportPattern("^[[:alpha:]]+")
+>>>>>>> f1aea3e024f55620491aeb803963543027c6e2f6
