@@ -15,8 +15,7 @@
 #' @return bboxes is a list of bounding box definions in matrix format
 #'
 #' @examples
-#' # bboxes  <- Define.ClimateIndex(  c("NINO_3", "NINO_4", "NINO_3.4", 
-#'            							"NINO_1+2", "IOD_west", "IOD_east") 
+#' # bboxes  <- Define.ClimateIndex(  c("NINO_3", "NINO_4", "NINO_3.4", "NINO_1+2", "IOD_west", "IOD_east") 
 #'
 #######################################################################################
 Define.ClimateIndex <- function(climateIndices){

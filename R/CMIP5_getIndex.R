@@ -26,15 +26,8 @@
 #' @return NULL. Results are saved in files in the user's working directory.
 #'
 #' @examples
-#' # CMIP5.getIndex(var 		= "tos", 
-#' 					CCscenarios	= "historical", 
-#' 					models 		= "CSIRO-QCCCE/CSIRO-Mk3-6-0", 
-#' 					starttime	= ISOdate(1976,01,01,0,0), 
-#' 					endtime		= ISOdate(2005,12,31,0,0), 
-#' 					CMIP5_paths = CMIP_paths from CMIP5.getPaths()
-#' 					bboxes 		= bboxes from Define.ClimateIndex() 
-#' 					out_path    = "/home/userID/analysis",
-#'								  )
+#' # CMIP5.getIndex(var 		= "tos", CCscenarios	= "historical", models 		= "CSIRO-QCCCE/CSIRO-Mk3-6-0", starttime	= ISOdate(1976,01,01,0,0), endtime		= ISOdate(2005,12,31,0,0), CMIP5_paths = "/var/data/CMIP5", bboxes = cbind(c(210,270,270,210),c(-5,-5,5,5)), out_path = "/home/me/")
+#'								  
 #'
 #######################################################################################
 
@@ -201,9 +194,16 @@ for (scenario in CCscenarios){
     
     for (k in 1:length(bboxes)){
 
-  	    # clip data in bboxes 
-        pip     <- pnt.in.poly(coord, bboxes[[k]])
-        subdata <- data[which(pip$pip>0),]
+      # clip data in bboxes 
+      # point input
+      if (!is.matrix(bboxes[[k]])){
+        pip      <- which.min(spDistsN1(as.matrix(coord),bboxes[[k]] ,longlat=TRUE))
+        subdata <- data[pip,]} else {		
+          # bbox input
+          pip     <- pnt.in.poly(coord, bboxes[[k]])
+          subdata <- data[which(pip$pip>0),] 
+          # calculate mean i.e. index
+          subdata <- apply(subdata,2, mean, na.rm=T)}
 
 		# calculate mean i.e. index
         subdata <- apply(subdata,2, mean, na.rm=T)

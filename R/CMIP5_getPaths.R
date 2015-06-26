@@ -17,12 +17,7 @@
 #' arranged by climate variables, climate scenarios, and climate model names 
 #' 
 #' @examples
-#' # CMIP5_paths <- CMIP5.getpaths(	vars		= "tos", 
-#'									ensemble	= "r1i1p1", 
-#'									models  	= "CSIRO-QCCCE/CSIRO-Mk3-6-0", 
-#' 									CCscenarios	= "historical", 
-#'									data_path	= "/var/data/CMIP5/"
-#'								  )
+#' # CMIP5_paths <- CMIP5.getpaths(	vars		= "tos", ensemble	= "r1i1p1", models  	= "CSIRO-QCCCE/CSIRO-Mk3-6-0", CCscenarios	= "historical", data_path	= "/var/data/CMIP5/")
 #'
 #######################################################################################
 

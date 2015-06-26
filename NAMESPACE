@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import(RNetCDF)
 import(zoo)
 import(PCICt)
@@ -9,6 +8,4 @@ importFrom(rgdal)
 importFrom(ggplot2)
 importFrom(plyr)
 exportPattern("^[[:alpha:]]+")
-=======
-exportPattern("^[[:alpha:]]+")
->>>>>>> f1aea3e024f55620491aeb803963543027c6e2f6
+

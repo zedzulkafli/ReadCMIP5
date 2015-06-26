@@ -1,4 +1,5 @@
-#' CMIP5_createNCDF writes annual files for various weather variables according #' to JULES accepted format
+#' CMIP5_createNCDF writes annual files for various weather variables according 
+#' to JULES accepted format
 #'
 #' @author Zed Zulkafli
 #'

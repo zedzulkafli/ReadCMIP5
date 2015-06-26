@@ -15,7 +15,7 @@
 #' @return NULL. Plots are saved in the @param out_path 
 #'
 #' @examples
-#' # 
+#' # CMIP5(climateIndices =climateIndices, models="CSIRO-QCCCE/CSIRO-Mk3-6-0", CCscenarios="historical", out_path = "/home/me")
 #'
 #########################################################################
 
