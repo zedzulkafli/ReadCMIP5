@@ -2,7 +2,7 @@
 #' returns the time series in the user specified spatial (interpolated to the user 
 #' grid) and temporal domain  
 #'
-#' @author Zed Zulkafli
+#' @author Zed Zulkafli, Wouter Buytaert
 #'
 #' @description Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
 #' do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -21,20 +21,20 @@
 #'
 #######################################################################################
 
-CMIP5.regridTS <- function(var, CCscenarios, models, startyear, endyear, CMIP5.paths, ModelDomain, out.path){
+CMIP5.regridTS <- function(var, CCscenarios, models, year, CMIP5_paths, ModelDomain, out_path){
 
 bboxes    <- ModelDomain[[1]]
 hires.map <- ModelDomain[[2]]
 
-starttime <- ISOdate(startyear,01,01,0,0)
-endtime   <- ISOdate(endyear,12,31,0,0)
+starttime <- ISOdate(year,01,01,0,0)
+endtime   <- ISOdate(year,12,31,0,0)
  
 period 	<- paste(as.character(as.POSIXlt(starttime)$year + 1900),
                   as.character(as.POSIXlt(endtime)$year + 1900), sep="_to_")
       
 for (scenario in CCscenarios){
  
-  if (!file.exists(paste(out.path, var, "_",scenario,"_timeindex.rda",sep=""))){
+  if (!file.exists(paste(out_path, var, "_",scenario,"_timeindex.rda",sep=""))){
 
   ## get timestamps from each raw data file
   time   <- list()
@@ -42,10 +42,10 @@ for (scenario in CCscenarios){
   length <- list()
    
   for(model in models){
-    files <- CMIP5.paths[[var]][[scenario]][[model]]
+    files <- CMIP5_paths[[var]][[scenario]][[model]]
     for (i in 1:length(files)){
     nc <- open.nc(files[i])
-    print(files[i])
+    print(paste('reading metadata of ', files[i],sep=''))
     time[[model]][[i]] <- var.get.nc(nc, "time")
     start[[model]][[i]] <- att.get.nc(nc, "time", "units")
     length[[model]][[i]] <- att.get.nc(nc, "time", "calendar")
@@ -100,10 +100,10 @@ for (scenario in CCscenarios){
 
   rm(files,time,start,length, year, month, day, ts_365, ts_365_mon, ts_365_day);
 
-  save(time2,file=paste(out.path, var, "_",scenario,"_timeindex.rda",sep=""))
+  save(time2,file=paste(out_path, var, "_",scenario,"_timeindex.rda",sep=""))
 
   } else {
-  load (file=paste(out.path, var, "_",scenario,"_timeindex.rda",sep=""))
+  load (file=paste(out_path, var, "_",scenario,"_timeindex.rda",sep=""))
   } 
 
   ## locate start and end indices to read in each file:  
@@ -127,8 +127,8 @@ for (scenario in CCscenarios){
     for (i in 1:length(starti[[model]])){
     if(starti[[model]][[i]]< endi[[model]][[i]]){ #check that file contains data within time domain 
                          
-            nc <- open.nc(CMIP5.paths[[var]][[scenario]][[model]][[i]])
-			print(CMIP5.paths[[var]][[scenario]][[model]][[i]])
+            nc <- open.nc(CMIP5_paths[[var]][[scenario]][[model]][[i]])
+            print(paste('extracting from ',CMIP5_paths[[var]][[scenario]][[model]][[i]],sep=''))
         
             if (count==1) {
 
@@ -187,11 +187,11 @@ for (scenario in CCscenarios){
 
         # store data and write ncdf       
         RegridTS[[names(bboxes)[k]]] <- subdata; 
-        CMIP5.createNCDF(var, scenario, model, starttime, endtime, hires.map, subdata, out.path)
+        CMIP5.createNCDF(var, scenario, model, starttime, endtime, hires.map, subdata, out_path)
         rm( subcoord, subdata, pip)	
      } #end for bboxes loop
   
-  setwd(out.path)
+  setwd(out_path)
   save(CMIP5Ts=RegridTS, 
 	file =paste(var, "CMIP5", strsplit(model, "/")[[1]][2], scenario, period,  "regridTS.Rdata", sep="."))
  

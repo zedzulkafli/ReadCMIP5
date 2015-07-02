@@ -52,7 +52,7 @@ for (scenario in CCscenarios){
     files <- CMIP5_paths[[var]][[scenario]][[model]]
     for (i in 1:length(files)){
     nc <- open.nc(files[i])
-    print(files[i])
+    print(paste('reading metadata of ', files[i],sep=''))
     time[[model]][[i]] <- var.get.nc(nc, "time")
     start[[model]][[i]] <- att.get.nc(nc, "time", "units")
     length[[model]][[i]] <- att.get.nc(nc, "time", "calendar")
@@ -150,79 +150,75 @@ for (scenario in CCscenarios){
     for (i in 1:length(starti[[model]])){
     if(starti[[model]][[i]]< endi[[model]][[i]]){ #check that file contains data within time domain 
                          
-            nc <- open.nc(CMIP5_paths[[var]][[scenario]][[model]][[i]])
-	        print(CMIP5_paths[[var]][[scenario]][[model]][[i]])
+      nc <- open.nc(CMIP5_paths[[var]][[scenario]][[model]][[i]])
+	    print(paste('extracting from ', CMIP5_paths[[var]][[scenario]][[model]][[i]],sep=''))
         
-            if (count==1) {
+      if (count==1) {
 
 	    lon   <- var.get.nc(nc, "lon");  lon [which(lon <0) ] <- lon [which(lon <0) ]  + 360
 	    lat   <- var.get.nc(nc, "lat")
-        counti <- endi[[model]][[i]] - starti[[model]][[i]] +1 
+      counti <- endi[[model]][[i]] - starti[[model]][[i]] +1 
 	    
-		data <- var.get.nc(nc, var, start=c(NA,NA,starti[[model]][[i]]), count=c(NA,NA,counti))
+		  data <- var.get.nc(nc, var, start=c(NA,NA,starti[[model]][[i]]), count=c(NA,NA,counti))
 	    
-		close.nc(nc)
+		  close.nc(nc)
    
-            if(is.finite(dim(lon)[2])) {
-             	coord <- cbind(as.vector(lon), as.vector(lat)) }  else { 
+      if(is.finite(dim(lon)[2])) {
+       	coord <- cbind(as.vector(lon), as.vector(lat)) }  else { 
 				coord <- expand.grid(lon,lat)}          
 				rm(lon,lat) 
 
-            data  <- apply(data,3, as.vector)
+        data  <- apply(data,3, as.vector)
 
-            ts <- time2[[model]][[i]][starti[[model]][[i]]:endi[[model]][[i]]]  
+        ts <- time2[[model]][[i]][starti[[model]][[i]]:endi[[model]][[i]]]  
 
-            count <- count + 1 
+        count <- count + 1 
 	    
 	    } else {
 	    
-            counti <- endi[[model]][[i]] - starti[[model]][[i]] +1 
+        counti <- endi[[model]][[i]] - starti[[model]][[i]] +1 
 
-			data.subset <- var.get.nc(nc, var, start=c(NA,NA,starti[[model]][[i]]), count=c(NA,NA,counti))
+			  data.subset <- var.get.nc(nc, var, start=c(NA,NA,starti[[model]][[i]]), count=c(NA,NA,counti))
 
-			close.nc(nc)
+			  close.nc(nc)
    
-            data.subset <- apply(data.subset,3, as.vector)
+        data.subset <- apply(data.subset,3, as.vector)
            
-            data <- cbind(data,data.subset)
-            ts <- c(ts, time2[[model]][[i]][starti[[model]][[i]]:endi[[model]][[i]]])
+        data <- cbind(data,data.subset)
+        ts <- c(ts, time2[[model]][[i]][starti[[model]][[i]]:endi[[model]][[i]]])
 
-            count <- count + 1 
+        count <- count + 1 
 			}
-        }
+      }
       }
     
     for (k in 1:length(bboxes)){
 
-      # clip data in bboxes 
-      # point input
-      if (!is.matrix(bboxes[[k]])){
-        pip      <- which.min(spDistsN1(as.matrix(coord),bboxes[[k]] ,longlat=TRUE))
-        subdata <- data[pip,]} else {		
-          # bbox input
-          pip     <- pnt.in.poly(coord, bboxes[[k]])
-          subdata <- data[which(pip$pip>0),] 
-          # calculate mean i.e. index
-          subdata <- apply(subdata,2, mean, na.rm=T)}
+         # clip data in bboxes 
+         # point input
+         if (!is.matrix(bboxes[[k]])){
+         pip      <- which.min(spDistsN1(as.matrix(coord),bboxes[[k]] ,longlat=TRUE))
+         subdata <- data[pip,]} else {		
+         # bbox input
+         pip     <- pnt.in.poly(coord, bboxes[[k]])
+         subdata <- data[which(pip$pip>0),] 
+         # calculate mean i.e. index
+         subdata <- apply(subdata,2, mean, na.rm=T)}
 
-		# calculate mean i.e. index
-        subdata <- apply(subdata,2, mean, na.rm=T)
-
-		# convert to zoo 
-		subdata <- as.zoo(subdata); index(subdata) <- ts
+		     # convert to zoo 
+		     subdata <- as.zoo(subdata); index(subdata) <- ts
     
-        # uncomment for aggregating to monthly
-		#subdata <- apply.monthly(subdata, mean,na.rm=T)
-       
-        ClimateIndexTS[[model]][[names(bboxes)[k]]] <- subdata
+         # uncomment for aggregating to monthly
+		     # subdata <- apply.monthly(subdata, mean,na.rm=T)
+         ClimateIndexTS[[model]][[names(bboxes)[k]]] <- subdata
      } 
 	 
 	rm(data); rm(subdata); rm(pip);
 	gc()
   	
     
-   }
-    setwd(out_path)
+  }
+  setwd(out_path)
 	save(ClimateIndexTS=ClimateIndexTS, 
 	file =paste("CMIP5", scenario, period, "climateindices.RData", sep="_"))
    

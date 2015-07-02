@@ -10,8 +10,7 @@ Description: Various functions for extraction of global
               of geographical location and time domain            
 Depends:
     R (>= 3.1.2),
-    RNetCDF, zoo, PCICt, SDMTools,
-        gstat
+    RNetCDF, zoo, PCICt, SDMTools, sp
 Imports: 
-    ncdf, ggplot2, plyr, rgdal
+    ncdf, gstat
 License: GPL-3
